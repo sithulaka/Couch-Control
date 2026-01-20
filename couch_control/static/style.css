@@ -1,0 +1,285 @@
+/* Couch Control - WebSocket Client CSS */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #0a0a0f;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Screen container */
+#container {
+    width: 100vw;
+    height: calc(100vh - 60px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+    position: relative;
+    overflow: hidden;
+}
+
+#screen {
+    max-width: 100%;
+    max-height: 100%;
+    touch-action: none;
+}
+
+/* Loading overlay */
+#loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    z-index: 10;
+}
+
+#loading.hidden {
+    display: none;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    border-top-color: #e94560;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Click indicator */
+#click-indicator {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    border: 3px solid #e94560;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+    z-index: 1000;
+    background: rgba(233, 69, 96, 0.2);
+    transition: none;
+}
+
+#click-indicator.active {
+    animation: clickPulse 0.4s ease-out forwards;
+}
+
+@keyframes clickPulse {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
+}
+
+/* Control bar */
+#control-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: rgba(20, 20, 35, 0.98);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 0 15px;
+    z-index: 100;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.control-btn {
+    background: rgba(255, 255, 255, 0.12);
+    border: none;
+    color: white;
+    font-size: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+}
+
+.control-btn:hover, .control-btn:active {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+}
+
+.control-btn.active {
+    background: #e94560;
+}
+
+.control-select {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: white;
+    font-size: 14px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    min-width: 65px;
+    height: 44px;
+}
+
+.control-select option {
+    background: #1a1a2e;
+    color: white;
+}
+
+/* Status indicator */
+#status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #888;
+    margin-left: 5px;
+}
+
+#status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #f44;
+}
+
+#status-dot.connected {
+    background: #4f4;
+}
+
+/* Keyboard panel */
+#keyboard-panel {
+    position: fixed;
+    bottom: 60px;
+    left: 0;
+    right: 0;
+    background: rgba(20, 20, 35, 0.98);
+    padding: 15px;
+    z-index: 99;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: none;
+}
+
+#keyboard-panel.visible {
+    display: block;
+}
+
+#keyboard-panel input {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    color: white;
+    outline: none;
+    margin-bottom: 12px;
+}
+
+#keyboard-panel input:focus {
+    border-color: #e94560;
+}
+
+.key-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.key-btn {
+    background: rgba(255, 255, 255, 0.12);
+    border: none;
+    color: white;
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    flex: 1;
+    min-width: 50px;
+    transition: background 0.15s;
+}
+
+.key-btn:hover, .key-btn:active {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.key-btn.primary {
+    background: #e94560;
+    flex: 2;
+}
+
+.key-btn.primary:hover, .key-btn.primary:active {
+    background: #c73a52;
+}
+
+/* Mobile adjustments */
+@media (max-width: 500px) {
+    #control-bar {
+        gap: 6px;
+        padding: 0 10px;
+    }
+    
+    .control-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+    
+    .control-select {
+        min-width: 55px;
+        height: 40px;
+        padding: 8px;
+        font-size: 12px;
+    }
+    
+    #status {
+        display: none;
+    }
+    
+    .key-btn {
+        padding: 10px 10px;
+        font-size: 12px;
+    }
+}
+
+/* Landscape adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+    #control-bar {
+        height: 50px;
+    }
+    
+    #container {
+        height: calc(100vh - 50px);
+    }
+    
+    #keyboard-panel {
+        bottom: 50px;
+        padding: 10px;
+    }
+    
+    .key-row {
+        margin-bottom: 6px;
+    }
+}

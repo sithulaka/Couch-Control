@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0a0a0f">
+    <title>Couch Control</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Screen container -->
+    <div id="container">
+        <div id="loading">
+            <div class="spinner"></div>
+            <p id="loading-text">Connecting...</p>
+        </div>
+        <canvas id="screen"></canvas>
+    </div>
+    
+    <!-- Click indicator -->
+    <div id="click-indicator"></div>
+    
+    <!-- Keyboard panel -->
+    <div id="keyboard-panel">
+        <input type="text" id="text-input" placeholder="Type here and press Send..." 
+               autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <div class="key-row">
+            <button class="key-btn primary" id="btn-send">Send Text</button>
+            <button class="key-btn" data-key="Enter">Enter ↵</button>
+            <button class="key-btn" data-key="Backspace">⌫</button>
+        </div>
+        <div class="key-row">
+            <button class="key-btn" data-key="Tab">Tab</button>
+            <button class="key-btn" data-key="Escape">Esc</button>
+            <button class="key-btn" data-key="ctrl+c">Ctrl+C</button>
+            <button class="key-btn" data-key="ctrl+v">Ctrl+V</button>
+            <button class="key-btn" data-key="ctrl+z">Ctrl+Z</button>
+        </div>
+        <div class="key-row">
+            <button class="key-btn" data-key="Up">↑</button>
+            <button class="key-btn" data-key="Down">↓</button>
+            <button class="key-btn" data-key="Left">←</button>
+            <button class="key-btn" data-key="Right">→</button>
+            <button class="key-btn" data-key="space">Space</button>
+        </div>
+    </div>
+    
+    <!-- Control bar -->
+    <div id="control-bar">
+        <button class="control-btn" id="btn-keyboard" title="Keyboard">⌨️</button>
+        
+        <select class="control-select" id="select-quality" title="Quality">
+            <option value="40">Low</option>
+            <option value="60">Med</option>
+            <option value="75" selected>High</option>
+            <option value="90">Ultra</option>
+        </select>
+        
+        <select class="control-select" id="select-scale" title="Resolution">
+            <option value="0.5">50%</option>
+            <option value="0.75" selected>75%</option>
+            <option value="1.0">100%</option>
+        </select>
+        
+        <button class="control-btn" id="btn-fullscreen" title="Fullscreen">⛶</button>
+        <button class="control-btn" id="btn-reconnect" title="Reconnect">🔄</button>
+        
+        <div id="status">
+            <span id="status-dot"></span>
+            <span id="status-text">Connecting</span>
+        </div>
+    </div>
+    
+    <script src="/static/app.js"></script>
+</body>
+</html>

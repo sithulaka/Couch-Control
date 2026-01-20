@@ -1,0 +1,20 @@
+# Couch Control - Lightweight Remote Desktop
+# Minimal dependencies for ultra-low RAM usage
+
+# Async HTTP server (for static files)
+aiohttp>=3.9.0
+
+# WebSocket server (for real-time bidirectional streaming)
+websockets>=12.0
+
+# Screen capture (fast, direct memory access)
+mss>=9.0.0
+
+# JPEG encoding
+Pillow>=10.0.0
+
+# Config file parsing
+PyYAML>=6.0
+
+# Auto-detect local network IP
+netifaces>=0.11.0

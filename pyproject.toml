@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "couch-control"
+version = "1.0.0"
+description = "Ultra-lightweight remote desktop control for local network"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Couch Control"}
+]
+keywords = ["remote-desktop", "screen-sharing", "mjpeg", "lightweight"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Desktop Environment :: Screen Savers",
+]
+
+dependencies = [
+    "aiohttp>=3.9.0",
+    "mss>=9.0.0",
+    "Pillow>=10.0.0",
+    "PyYAML>=6.0",
+    "netifaces>=0.11.0",
+]
+
+[project.optional-dependencies]
+fast = [
+    "PyTurboJPEG>=1.7.0",
+]
+
+[project.scripts]
+couch-control = "couch_control.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/couch-control"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["couch_control*"]
+
+[tool.setuptools.package-data]
+couch_control = ["static/*"]
