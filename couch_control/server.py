@@ -185,6 +185,9 @@ class CouchControlServer:
             pass
         except Exception as e:
             print(f"Frame streaming error: {e}")
+        finally:
+            # Ensure resources are cleaned up if needed
+            pass
     
     async def _handle_input(self, message: str) -> None:
         """Handle an input event from WebSocket."""
@@ -214,6 +217,14 @@ class CouchControlServer:
                 x = float(data.get("x", 0))
                 y = float(data.get("y", 0))
                 input_handler.move_mouse(x, y, normalized=True)
+            
+            elif event_type == "mousedown":
+                button = int(data.get("button", 1))
+                input_handler.mouse_down(button)
+            
+            elif event_type == "mouseup":
+                button = int(data.get("button", 1))
+                input_handler.mouse_up(button)
             
             elif event_type == "scroll":
                 direction = data.get("direction", "down")

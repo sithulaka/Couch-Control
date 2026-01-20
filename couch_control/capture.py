@@ -75,8 +75,8 @@ class ScreenCapture:
         self._height = mon["height"]
         
         # Calculate scaled dimensions
-        self._scaled_width = int(self._width * self.scale)
-        self._scaled_height = int(self._height * self.scale)
+        self._scaled_width = max(1, int(self._width * self.scale))
+        self._scaled_height = max(1, int(self._height * self.scale))
     
     @property
     def width(self) -> int:

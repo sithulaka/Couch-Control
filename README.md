@@ -20,76 +20,63 @@ Ultra-lightweight remote desktop control for your local network. Control your Li
 
 ## 🚀 Quick Start
 
-### 1. Install
+### 1. Install & Setup Service
+
+The improved installer sets up everything for you, including the system service.
 
 ```bash
 # Clone the repository
 git clone https://github.com/sithulaka/Couch-Control.git
 cd Couch-Control
 
-# Create virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
-
-# Install the package
-pip install -e .
-
-# Install system dependency
-sudo apt install xdotool
+# Run the setup script (installs dependencies + system service)
+./setup_service.sh
 ```
 
-### 2. Run
+### 2. Start
 
 ```bash
-# Start the server
-couch-control start
+# Start the service
+sudo systemctl start couch-control
 
-# It will show something like:
-# 🛋️  Couch Control started!
-#    Web UI:    http://192.168.1.100:8080
-#    WebSocket: ws://192.168.1.100:8081
+# Check status
+sudo systemctl status couch-control
 ```
+
+The app runs automatically on startup!
 
 ### 3. Open on Your Phone
 
-Open the Web UI URL in your phone's browser. That's it!
+Open the Web UI URL shown in the logs (or find IP via `ip a`).
+
 
 ## 📖 Usage
 
-### CLI Commands
+### Control Modes
 
-```bash
-couch-control start              # Start the server
-couch-control start --port 9090  # Use different port
-couch-control start --pin 1234   # Require PIN authentication
-couch-control start --quality 70 # Higher quality (more bandwidth)
-couch-control start --fps 30     # Higher FPS (more CPU)
+| Mode | Icon | Description |
+|------|------|-------------|
+| **Mouse Mode** (Default) | 🔍 Zoom | **Interact with Desktop.** Click, drag windows, type. Pan/Zoom is disabled. Press "Zoom" to switch to View Mode. |
+| **View Mode** | 🔒 Lock | **Adjust View.** Pan (1 finger) or Zoom (2 fingers). Desktop interaction is disabled. Press "Lock" to switch back. |
 
-couch-control stop               # Stop the server
-couch-control status             # Check if running
-couch-control ip                 # Show your local IP address
-couch-control config             # Show current configuration
-```
-
-### 👆 Touch Gestures
+### 👆 Touch Gestures (Mouse Mode)
 
 | Gesture | Action |
 |---------|--------|
-| Tap | Left click |
+| Tap | Left click (Jumps to finger) |
+| Tap + Drag (in Drag Mode) | Click & Drag (Select text) |
 | Long press (500ms) | Right click |
-| Drag | Move mouse |
 | Double tap | Double click |
-| Scroll (mouse wheel) | Scroll up/down |
-| Right-click (desktop) | Right click |
+| Scroll (mouse wheel) | Two-finger scroll (if supported) or use buttons |
 
-### ⌨️ Keyboard
+### 🎮 Control Bar
 
-Tap the ⌨️ button to show the virtual keyboard. Type your text and press Send.
-
-Special keys available:
-- Enter, Backspace, Tab, Escape, Space
-- Arrow keys (↑ ↓ ← →)
-- Ctrl+C, Ctrl+V, Ctrl+Z
+- **👆 Select**: Toggle "Drag/Select Mode". When active, touching stamps "Left Click Down" so you can drag to select text.
+- **🔍/🔒 Zoom/Lock**: Toggle between Mouse Mode (Interact) and View Mode (Pan/Zoom).
+- **🎯 Reset**: Instantly reset view to center and 100% zoom.
+- **⌨️ Kbd**: Show virtual keyboard.
+- **⛶ Full**: Toggle fullscreen.
+- **🔄 Sync**: Reconnect WebSocket.
 
 ## ⚙️ Configuration
 

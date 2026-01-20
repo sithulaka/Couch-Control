@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -8,7 +9,35 @@
     <meta name="theme-color" content="#0a0a0f">
     <title>Couch Control</title>
     <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .control-btn.active {
+            background-color: #e94560;
+            color: white;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        #screen {
+            transform-origin: 0 0;
+        }
+
+        .control-btn {
+            flex-direction: column;
+            padding: 2px !important;
+            gap: 2px;
+        }
+
+        .btn-label {
+            font-size: 9px;
+            line-height: 1;
+        }
+    </style>
 </head>
+
 <body>
     <!-- Screen container -->
     <div id="container">
@@ -18,14 +47,14 @@
         </div>
         <canvas id="screen"></canvas>
     </div>
-    
+
     <!-- Click indicator -->
     <div id="click-indicator"></div>
-    
+
     <!-- Keyboard panel -->
     <div id="keyboard-panel">
-        <input type="text" id="text-input" placeholder="Type here and press Send..." 
-               autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <input type="text" id="text-input" placeholder="Type here and press Send..." autocomplete="off"
+            autocorrect="off" autocapitalize="off" spellcheck="false">
         <div class="key-row">
             <button class="key-btn primary" id="btn-send">Send Text</button>
             <button class="key-btn" data-key="Enter">Enter ↵</button>
@@ -46,33 +75,55 @@
             <button class="key-btn" data-key="space">Space</button>
         </div>
     </div>
-    
+
     <!-- Control bar -->
     <div id="control-bar">
         <button class="control-btn" id="btn-keyboard" title="Keyboard">⌨️</button>
-        
+
         <select class="control-select" id="select-quality" title="Quality">
             <option value="40">Low</option>
             <option value="60">Med</option>
             <option value="75" selected>High</option>
             <option value="90">Ultra</option>
         </select>
-        
+
+        <div class="control-group">
+            <button class="control-btn" id="btn-drag" title="Drag/Select Mode">
+                <span>👆</span>
+                <span class="btn-label">Select</span>
+            </button>
+            <button class="control-btn" id="btn-mode" title="Toggle Zoom/Control Mode">
+                <span id="mode-icon">🔍</span>
+                <span class="btn-label">Zoom</span>
+            </button>
+            <button class="control-btn" id="btn-reset" title="Reset View">
+                <span>🎯</span>
+                <span class="btn-label">Reset</span>
+            </button>
+        </div>
+
         <select class="control-select" id="select-scale" title="Resolution">
             <option value="0.5">50%</option>
             <option value="0.75" selected>75%</option>
             <option value="1.0">100%</option>
         </select>
-        
-        <button class="control-btn" id="btn-fullscreen" title="Fullscreen">⛶</button>
-        <button class="control-btn" id="btn-reconnect" title="Reconnect">🔄</button>
-        
+
+        <button class="control-btn" id="btn-fullscreen" title="Fullscreen">
+            <span>⛶</span>
+            <span class="btn-label">Full</span>
+        </button>
+        <button class="control-btn" id="btn-reconnect" title="Reconnect">
+            <span>🔄</span>
+            <span class="btn-label">Sync</span>
+        </button>
+
         <div id="status">
             <span id="status-dot"></span>
             <span id="status-text">Connecting</span>
         </div>
     </div>
-    
+
     <script src="/static/app.js"></script>
 </body>
+
 </html>
