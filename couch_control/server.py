@@ -164,7 +164,7 @@ class CouchControlServer:
         frame_interval = self.config.frame_interval
         
         try:
-            while True:
+            while not self.shutdown_event.is_set():
                 start_time = time.time()
                 
                 # Capture and encode frame
@@ -183,8 +183,12 @@ class CouchControlServer:
                 
         except asyncio.CancelledError:
             pass
+        except (SystemExit, KeyboardInterrupt):
+            # Graceful shutdown - don't log as error
+            pass
         except Exception as e:
-            print(f"Frame streaming error: {e}")
+            if not self.shutdown_event.is_set():
+                print(f"Frame streaming error: {e}")
         finally:
             # Ensure resources are cleaned up if needed
             pass
@@ -593,9 +597,19 @@ class CouchControlServer:
 
 def run_server(config: Optional[Config] = None) -> None:
     """Run the server (blocking)."""
+    import signal
+    
     server = CouchControlServer(config)
+    
+    def handle_signal(signum, frame):
+        """Handle shutdown signals gracefully."""
+        server.shutdown_event.set()
+    
+    # Setup signal handlers before starting the event loop
+    signal.signal(signal.SIGTERM, handle_signal)
+    signal.signal(signal.SIGINT, handle_signal)
     
     try:
         asyncio.run(server.run_forever())
     except KeyboardInterrupt:
-        print("\nShutting down...")
+        pass

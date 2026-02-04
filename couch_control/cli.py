@@ -64,18 +64,13 @@ def cmd_start(args) -> int:
     if args.pin:
         config._config["security"]["pin"] = args.pin
     
-    # Write PID and setup cleanup
+    # Write PID
     write_pid()
-    
-    def cleanup(signum, frame):
-        remove_pid()
-        sys.exit(0)
-    
-    signal.signal(signal.SIGTERM, cleanup)
-    signal.signal(signal.SIGINT, cleanup)
     
     try:
         run_server(config)
+    except KeyboardInterrupt:
+        pass
     finally:
         remove_pid()
     
