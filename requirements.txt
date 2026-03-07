@@ -1,16 +1,12 @@
-# Couch Control - Lightweight Remote Desktop
-# Minimal dependencies for ultra-low RAM usage
+# Couch Control — Core dependencies
 
-# Async HTTP server (for static files)
+# Async HTTP + WebSocket server (single port for both)
 aiohttp>=3.9.0
 
-# WebSocket server (for real-time bidirectional streaming)
-websockets>=12.0
-
-# Screen capture (fast, direct memory access)
+# Screen capture (works on Linux, Windows, macOS)
 mss>=9.0.0
 
-# JPEG encoding
+# Image processing / JPEG encoding fallback
 Pillow>=10.0.0
 
 # Config file parsing
@@ -18,3 +14,18 @@ PyYAML>=6.0
 
 # Auto-detect local network IP
 netifaces>=0.11.0
+
+# ── Optional ──────────────────────────────────────────────────────────────
+
+# Fast JPEG encoding (Linux/macOS — install libturbojpeg first)
+# sudo apt install libturbojpeg0
+# pip install PyTurboJPEG
+# PyTurboJPEG>=1.7.0
+
+# Input control for Windows / macOS (replaces xdotool)
+# pip install pynput
+# pynput>=1.7.0
+
+# System tray icon (all platforms)
+# pip install pystray
+# pystray>=0.19.0

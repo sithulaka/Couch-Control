@@ -1,0 +1,219 @@
+name: Build & Release
+
+# Triggers on any tag starting with "v" (e.g. v2.0.0, v2.1.0)
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write   # needed to create GitHub Releases
+
+jobs:
+  # ── Linux amd64 ────────────────────────────────────────────────────
+  build-linux:
+    name: Build Linux (amd64)
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install system dependencies
+        run: sudo apt-get install -y xdotool
+
+      - name: Install Python dependencies
+        run: |
+          pip install --upgrade pip
+          pip install pyinstaller aiohttp mss Pillow PyYAML netifaces
+
+      - name: Build binary
+        run: |
+          pyinstaller \
+            --onefile \
+            --name couch-control \
+            --add-data "couch_control/static:couch_control/static" \
+            --hidden-import aiohttp \
+            --hidden-import mss \
+            --hidden-import PIL \
+            --hidden-import yaml \
+            --hidden-import netifaces \
+            main.py
+
+      - name: Rename artifact
+        run: mv dist/couch-control dist/couch-control-linux-amd64
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-amd64
+          path: dist/couch-control-linux-amd64
+
+  # ── Windows amd64 ──────────────────────────────────────────────────
+  build-windows:
+    name: Build Windows (amd64)
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: pip install --upgrade pip pyinstaller aiohttp mss Pillow PyYAML netifaces pynput
+
+      - name: Build executable
+        run: |
+          pyinstaller `
+            --onefile `
+            --name couch-control `
+            --add-data "couch_control/static;couch_control/static" `
+            --hidden-import aiohttp `
+            --hidden-import mss `
+            --hidden-import PIL `
+            --hidden-import yaml `
+            --hidden-import netifaces `
+            --hidden-import pynput.keyboard `
+            --hidden-import pynput.mouse `
+            main.py
+
+      - name: Rename artifact
+        run: mv dist\couch-control.exe dist\couch-control-windows.exe
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-amd64
+          path: dist\couch-control-windows.exe
+
+  # ── macOS amd64 ────────────────────────────────────────────────────
+  build-macos:
+    name: Build macOS (amd64)
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: pip install --upgrade pip pyinstaller aiohttp mss Pillow PyYAML netifaces pynput
+
+      - name: Build binary
+        run: |
+          pyinstaller \
+            --onefile \
+            --name couch-control \
+            --add-data "couch_control/static:couch_control/static" \
+            --hidden-import aiohttp \
+            --hidden-import mss \
+            --hidden-import PIL \
+            --hidden-import yaml \
+            --hidden-import netifaces \
+            --hidden-import pynput.keyboard \
+            --hidden-import pynput.mouse \
+            main.py
+
+      - name: Rename artifact
+        run: mv dist/couch-control dist/couch-control-macos-amd64
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-amd64
+          path: dist/couch-control-macos-amd64
+
+  # ── Create GitHub Release ──────────────────────────────────────────
+  release:
+    name: Publish Release
+    needs: [build-linux, build-windows, build-macos]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Flatten + make executables
+        run: |
+          mv artifacts/linux-amd64/couch-control-linux-amd64   .
+          mv artifacts/windows-amd64/couch-control-windows.exe .
+          mv artifacts/macos-amd64/couch-control-macos-amd64   .
+          chmod +x couch-control-linux-amd64 couch-control-macos-amd64
+
+      - name: Generate SHA256 checksums
+        run: |
+          sha256sum couch-control-linux-amd64 \
+                    couch-control-windows.exe \
+                    couch-control-macos-amd64 > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Couch Control ${{ steps.version.outputs.VERSION }}"
+          generate_release_notes: true
+          files: |
+            couch-control-linux-amd64
+            couch-control-windows.exe
+            couch-control-macos-amd64
+            SHA256SUMS.txt
+          body: |
+            ## 🛋️ Couch Control ${{ steps.version.outputs.VERSION }}
+
+            Control your desktop from any phone browser — local network or anywhere via Cloudflare Tunnel.
+
+            ---
+
+            ## ⬇️ Download
+
+            | Platform | File | Notes |
+            |----------|------|-------|
+            | 🐧 Linux | `couch-control-linux-amd64` | x86_64, requires `xdotool` |
+            | 🪟 Windows | `couch-control-windows.exe` | x86_64, no Python needed |
+            | 🍎 macOS | `couch-control-macos-amd64` | x86_64/Rosetta2 |
+
+            Verify integrity: `sha256sum -c SHA256SUMS.txt`
+
+            ---
+
+            ## 🚀 Quick Start
+
+            ### Linux
+            ```bash
+            curl -L https://github.com/${{ github.repository }}/releases/latest/download/couch-control-linux-amd64 \
+                 -o couch-control
+            chmod +x couch-control
+            sudo apt install xdotool     # required for input control
+            ./couch-control start
+            ```
+
+            ### Windows
+            Download **`couch-control-windows.exe`** and double-click, or:
+            ```
+            couch-control-windows.exe start
+            couch-control-windows.exe start --pin 1234 --cloudflare
+            ```
+
+            ### macOS
+            ```bash
+            curl -L https://github.com/${{ github.repository }}/releases/latest/download/couch-control-macos-amd64 \
+                 -o couch-control
+            chmod +x couch-control
+            ./couch-control start
+            ```
+
+            ---
+
+            Then open the printed URL on your phone's browser. 📱

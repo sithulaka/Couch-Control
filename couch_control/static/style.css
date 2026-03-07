@@ -1,27 +1,53 @@
-/* Couch Control - WebSocket Client CSS */
+/* Couch Control — Main Stylesheet */
 
-* {
+/* ── Reset & base ── */
+*, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
     -webkit-tap-highlight-color: transparent;
 }
 
+:root {
+    --bg: #0a0a0f;
+    --surface: rgba(20, 20, 35, 0.98);
+    --surface2: rgba(255, 255, 255, 0.08);
+    --border: rgba(255, 255, 255, 0.10);
+    --accent: #e94560;
+    --accent2: #7c3aed;
+    --text: #ffffff;
+    --text-muted: #888;
+    --success: #4ade80;
+    --error: #f87171;
+    --control-h: 60px;
+}
+
+/* Light theme */
+[data-theme="light"] {
+    --bg: #f0f2f5;
+    --surface: rgba(255, 255, 255, 0.97);
+    --surface2: rgba(0, 0, 0, 0.06);
+    --border: rgba(0, 0, 0, 0.10);
+    --text: #111;
+    --text-muted: #666;
+}
+
 html, body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: #0a0a0f;
+    background: var(--bg);
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
+    color: var(--text);
 }
 
-/* Screen container */
+/* ── Screen container ── */
 #container {
     width: 100vw;
-    height: calc(100vh - 60px);
+    height: calc(100vh - var(--control-h));
     display: flex;
     justify-content: center;
     align-items: center;
@@ -34,9 +60,10 @@ html, body {
     max-width: 100%;
     max-height: 100%;
     touch-action: none;
+    transform-origin: 0 0;
 }
 
-/* Loading overlay */
+/* ── Loading overlay ── */
 #loading {
     position: absolute;
     top: 50%;
@@ -45,39 +72,35 @@ html, body {
     text-align: center;
     color: white;
     z-index: 10;
+    pointer-events: none;
 }
 
-#loading.hidden {
-    display: none;
-}
+#loading.hidden { display: none; }
 
 .spinner {
     width: 50px;
     height: 50px;
     border: 3px solid rgba(255, 255, 255, 0.2);
-    border-top-color: #e94560;
+    border-top-color: var(--accent);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 0 auto 20px;
 }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-/* Click indicator */
+/* ── Click indicator ── */
 #click-indicator {
     position: fixed;
     width: 40px;
     height: 40px;
-    border: 3px solid #e94560;
+    border: 3px solid var(--accent);
     border-radius: 50%;
     pointer-events: none;
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.5);
     z-index: 1000;
     background: rgba(233, 69, 96, 0.2);
-    transition: none;
 }
 
 #click-indicator.active {
@@ -85,201 +108,399 @@ html, body {
 }
 
 @keyframes clickPulse {
-    0% { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
+    0%   { opacity: 1; transform: translate(-50%, -50%) scale(0.5); }
     100% { opacity: 0; transform: translate(-50%, -50%) scale(1.5); }
 }
 
-/* Control bar */
+/* ── Tunnel banner ── */
+#tunnel-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #7c3aed, #e94560);
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    z-index: 200;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+#tunnel-banner.hidden { display: none; }
+
+#tunnel-url-text {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#btn-copy-tunnel,
+#btn-close-tunnel-banner {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ── PIN overlay ── */
+#pin-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+}
+
+#pin-overlay.hidden { display: none; }
+
+#pin-dialog {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px 28px;
+    max-width: 340px;
+    width: calc(100% - 40px);
+    text-align: center;
+}
+
+#pin-dialog h2 {
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+#pin-dialog p {
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+#pin-input {
+    width: 100%;
+    padding: 14px;
+    font-size: 18px;
+    letter-spacing: 4px;
+    text-align: center;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    outline: none;
+    margin-bottom: 12px;
+}
+
+#pin-input:focus { border-color: var(--accent); }
+
+#pin-error {
+    color: var(--error);
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+#pin-error.hidden { display: none; }
+
+#btn-pin-submit {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+#btn-pin-submit:hover { background: #c73a52; }
+
+/* ── Control bar ── */
 #control-bar {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 60px;
-    background: rgba(20, 20, 35, 0.98);
+    height: var(--control-h);
+    background: var(--surface);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    padding: 0 15px;
+    gap: 8px;
+    padding: 0 12px;
     z-index: 100;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--border);
 }
 
 .control-btn {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--surface2);
     border: none;
-    color: white;
-    font-size: 20px;
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
+    color: var(--text);
+    font-size: 18px;
+    min-width: 40px;
+    height: 40px;
+    padding: 2px 8px;
+    border-radius: 10px;
     cursor: pointer;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: all 0.15s;
+    gap: 1px;
+    transition: background 0.15s, transform 0.1s;
+    white-space: nowrap;
 }
 
-.control-btn:hover, .control-btn:active {
-    background: rgba(255, 255, 255, 0.25);
+.control-btn:hover,
+.control-btn:active {
+    background: rgba(255, 255, 255, 0.22);
     transform: scale(1.05);
 }
 
-.control-btn.active {
-    background: #e94560;
+.control-btn.active { background: var(--accent); }
+
+.btn-label {
+    font-size: 9px;
+    line-height: 1;
+    opacity: 0.85;
+}
+
+.control-group {
+    display: flex;
+    gap: 4px;
+    align-items: center;
 }
 
 .control-select {
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: white;
-    font-size: 14px;
-    padding: 10px 12px;
-    border-radius: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 13px;
+    padding: 8px 10px;
+    border-radius: 10px;
     cursor: pointer;
-    min-width: 65px;
-    height: 44px;
+    height: 40px;
+    min-width: 60px;
 }
 
-.control-select option {
-    background: #1a1a2e;
-    color: white;
-}
+.control-select option { background: #1a1a2e; }
 
-/* Status indicator */
+/* ── Status ── */
 #status {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     font-size: 11px;
-    color: #888;
-    margin-left: 5px;
+    color: var(--text-muted);
+    flex-shrink: 0;
 }
 
 #status-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #f44;
+    background: var(--error);
+    flex-shrink: 0;
 }
 
-#status-dot.connected {
-    background: #4f4;
+#status-dot.connected { background: var(--success); }
+
+.status-detail {
+    font-size: 10px;
+    color: var(--text-muted);
+    opacity: 0.7;
 }
 
-/* Keyboard panel */
+/* ── Keyboard panel ── */
 #keyboard-panel {
     position: fixed;
-    bottom: 60px;
+    bottom: var(--control-h);
     left: 0;
     right: 0;
-    background: rgba(20, 20, 35, 0.98);
-    padding: 15px;
+    background: var(--surface);
+    padding: 12px 14px;
     z-index: 99;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--border);
     display: none;
+    max-height: 55vh;
+    overflow-y: auto;
 }
 
-#keyboard-panel.visible {
-    display: block;
-}
+#keyboard-panel.visible { display: block; }
 
-#keyboard-panel input {
+#keyboard-panel input[type="text"] {
     width: 100%;
-    padding: 14px;
+    padding: 12px 14px;
     font-size: 16px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: var(--surface2);
+    border: 2px solid var(--border);
     border-radius: 10px;
-    color: white;
+    color: var(--text);
     outline: none;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
-#keyboard-panel input:focus {
-    border-color: #e94560;
-}
+#keyboard-panel input[type="text"]:focus { border-color: var(--accent); }
 
 .key-row {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     flex-wrap: wrap;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .key-btn {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--surface2);
     border: none;
-    color: white;
-    padding: 12px 14px;
+    color: var(--text);
+    padding: 10px 12px;
     border-radius: 8px;
     font-size: 13px;
     cursor: pointer;
     flex: 1;
-    min-width: 50px;
+    min-width: 44px;
     transition: background 0.15s;
+    white-space: nowrap;
 }
 
-.key-btn:hover, .key-btn:active {
-    background: rgba(255, 255, 255, 0.25);
-}
+.key-btn:hover,
+.key-btn:active { background: rgba(255, 255, 255, 0.22); }
 
 .key-btn.primary {
-    background: #e94560;
+    background: var(--accent);
     flex: 2;
 }
 
-.key-btn.primary:hover, .key-btn.primary:active {
-    background: #c73a52;
+.key-btn.primary:hover,
+.key-btn.primary:active { background: #c73a52; }
+
+.key-btn.accent {
+    background: rgba(124, 58, 237, 0.3);
+    border: 1px solid rgba(124, 58, 237, 0.5);
 }
 
-/* Mobile adjustments */
+.key-btn.accent:hover { background: rgba(124, 58, 237, 0.5); }
+
+/* ── Settings panel ── */
+#settings-panel {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 300;
+    display: flex;
+    align-items: flex-end;
+}
+
+#settings-panel.hidden { display: none; }
+
+#settings-content {
+    background: var(--surface);
+    border-radius: 20px 20px 0 0;
+    padding: 20px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-top: 1px solid var(--border);
+}
+
+.settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.settings-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+#btn-close-settings {
+    background: var(--surface2);
+    border: none;
+    color: var(--text);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.settings-group label {
+    width: 90px;
+    font-size: 14px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.settings-group input[type="range"] {
+    flex: 1;
+    accent-color: var(--accent);
+}
+
+.settings-group span {
+    width: 32px;
+    text-align: right;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.settings-group select {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.settings-info {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.8;
+}
+
+/* ── Mobile adjustments ── */
 @media (max-width: 500px) {
-    #control-bar {
-        gap: 6px;
-        padding: 0 10px;
-    }
-    
-    .control-btn {
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
-    }
-    
-    .control-select {
-        min-width: 55px;
-        height: 40px;
-        padding: 8px;
-        font-size: 12px;
-    }
-    
-    #status {
-        display: none;
-    }
-    
-    .key-btn {
-        padding: 10px 10px;
-        font-size: 12px;
-    }
+    #control-bar { gap: 5px; padding: 0 8px; }
+    .control-btn { min-width: 36px; height: 36px; font-size: 16px; }
+    .control-select { min-width: 52px; height: 36px; padding: 6px 8px; font-size: 12px; }
+    #status { display: none; }
+    .key-btn { padding: 8px 10px; font-size: 12px; }
 }
 
-/* Landscape adjustments */
+/* ── Landscape adjustments ── */
 @media (max-height: 500px) and (orientation: landscape) {
-    #control-bar {
-        height: 50px;
-    }
-    
-    #container {
-        height: calc(100vh - 50px);
-    }
-    
-    #keyboard-panel {
-        bottom: 50px;
-        padding: 10px;
-    }
-    
-    .key-row {
-        margin-bottom: 6px;
-    }
+    :root { --control-h: 50px; }
+    #keyboard-panel { padding: 8px 12px; }
+    .key-row { margin-bottom: 4px; }
+    #settings-content { border-radius: 0; max-height: 100vh; }
 }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
